@@ -4,25 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#f3f5f1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Socket Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./assets/css/admin.css">
+    <link rel="stylesheet" href="./assets/css/admin.css?v=20261107-0212">
 </head>
 <body>
-    <main id="loginPage" class="login-page" aria-label="Connexion administrateur">
+        <main id="loginPage" class="login-page" aria-label="Connexion administrateur">
         <section class="login-card">
             <div class="brand-mark" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 0 1 15 0v4.5A3.5 3.5 0 0 1 16 20H8a3.5 3.5 0 0 1-3.5-3.5V12Z"/><path d="M8 12.2v-1.7a4 4 0 0 1 8 0v1.7"/></svg>
             </div>
             <p class="eyebrow">Socket Admin</p>
             <h1>Bienvenue</h1>
-            <p class="login-copy">Connectez-vous avec votre compte Telegram pour accéder à l’administration.</p>
-            <button id="loginButton" class="login-button" type="button">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.7 3.4 18.4 20c-.2 1-.9 1.3-1.8.8l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L6 13.7l-5-1.6c-1.1-.3-1.1-1.1.2-1.6L20 2.4c.9-.3 1.7.2 1.7 1Z"/></svg>
-                Se connecter avec Telegram
-            </button>
+            <p class="login-copy">Saisissez votre code PIN à 4 chiffres.</p>
+            
+            <!-- Affichage des points du code PIN -->
+            <div class="pin-dots" id="pinDots">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+
+            <!-- Le clavier numérique -->
+            <div class="numpad" id="numpad">
+                <button type="button" class="numpad-btn" data-key="1">1</button>
+                <button type="button" class="numpad-btn" data-key="2">2</button>
+                <button type="button" class="numpad-btn" data-key="3">3</button>
+                <button type="button" class="numpad-btn" data-key="4">4</button>
+                <button type="button" class="numpad-btn" data-key="5">5</button>
+                <button type="button" class="numpad-btn" data-key="6">6</button>
+                <button type="button" class="numpad-btn" data-key="7">7</button>
+                <button type="button" class="numpad-btn" data-key="8">8</button>
+                <button type="button" class="numpad-btn" data-key="9">9</button>
+                <button type="button" class="numpad-btn numpad-empty" disabled></button>
+                <button type="button" class="numpad-btn" data-key="0">0</button>
+                <button type="button" class="numpad-btn numpad-backspace" data-key="backspace" aria-label="Effacer">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM18 9l-6 6M12 9l6 6"/></svg>
+                </button>
+            </div>
+                        <!-- Ajoute le loader juste en dessous du numpad -->
+            <div id="loginLoader" class="loader"></div>
+            
             <p id="loginStatus" class="login-status" role="status"></p>
         </section>
     </main>
@@ -98,7 +126,6 @@
     </div>
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Remplacer la ligne admin.js par : -->
-    <script type="module" src="./assets/js/main.js"></script>
+    <script type="module" src="./assets/js/main.js?v=20261107-0212"></script>
 </body>
 </html>

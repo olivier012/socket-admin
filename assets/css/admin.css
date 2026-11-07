@@ -61,6 +61,19 @@ button, input, select { font: inherit; }
 .login-button:active, .submit-button:active { transform: scale(.985); }
 .login-button:disabled { opacity: .55; cursor: not-allowed; }
 .login-status { min-height: 20px; margin-top: 12px; font-size: 13px; color: #a34d4d; }
+.pin-form { width: 100%; }
+.pin-input {
+    text-align: center;
+    font: 800 28px var(--display);
+    letter-spacing: 12px;
+}
+.sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0);
+    white-space: nowrap; border: 0;
+}
 
 .app { width: min(100%, 480px); min-height: 100vh; margin: 0 auto; padding: 24px 16px 110px; }
 .topbar { height: 58px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
@@ -109,3 +122,122 @@ input:focus, select:focus { border-color: var(--text); }
 .nav-button { border: 0; border-radius: 19px; background: transparent; color: #969c97; cursor: pointer; display: grid; place-items: center; }
 .nav-button svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .nav-button.active { background: var(--black); color: white; }
+
+/* --- NOUVEAU CLAVIER PIN --- */
+.pin-dots {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 24px 0;
+}
+.dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--line);
+    transition: all 0.2s ease;
+}
+.dot.filled {
+    background: var(--text);
+    transform: scale(1.1);
+}
+
+.numpad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 280px;
+    margin: 0 auto;
+}
+.numpad-btn {
+    height: 64px;
+    border-radius: 40%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-family: var(--display);
+    font-size: 24px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.1s, transform 0.1s;
+}
+.numpad-btn:active {
+    background: var(--line);
+    transform: scale(0.95);
+}
+.numpad-empty {
+    background: transparent;
+    border: none;
+    pointer-events: none;
+}
+.numpad-backspace {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+}
+.numpad-backspace:active {
+    background: var(--line);
+}
+
+/* Animation d'erreur pour les points */
+.pin-dots.error .dot {
+    background: #a34d4d;
+    animation: shake 0.4s ease-in-out;
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+/* Loader */
+.loader {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--line);
+    border-top-color: var(--text);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 20px auto;
+}
+.loader.active {
+    display: block;
+}
+@keyframes spin { 
+    to { transform: rotate(360deg); } 
+}
+.pin-dots.loading .dot {
+    animation: pulse 1s infinite alternate;
+}
+@keyframes pulse { 
+    from { opacity: 0.5; } 
+    to { opacity: 1; } 
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 100px; /* Au-dessus de la nav bar */
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--black);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    z-index: 9999;
+    white-space: nowrap;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}

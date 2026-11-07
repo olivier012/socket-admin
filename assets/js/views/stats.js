@@ -1,7 +1,10 @@
-import { api } from '../api.js';
+import { api } from '../api.js?v=20261107-0212';
 
 export const statsView = {
     async load() {
+        const tg = window.Telegram?.WebApp;
+        if (!tg?.initData) return;
+
         try {
             const data = await api.getStats();
             if (data.success) {

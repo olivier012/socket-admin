@@ -1,4 +1,4 @@
-import { api } from '../api.js';
+import { api } from '../api.js?v=20261107-0212';
 
 export const codesView = {
     init() {
@@ -14,6 +14,12 @@ export const codesView = {
             
             if (!code) return;
 
+            if (!tg?.initData) {
+                document.getElementById('codeInput').value = '';
+                tg?.showAlert?.('Code enregistré en mode aperçu.');
+                return;
+            }
+
             try {
                 await api.addCode(productId, code);
                 document.getElementById('codeInput').value = '';
@@ -21,7 +27,7 @@ export const codesView = {
                 tg?.HapticFeedback?.notificationOccurred('success');
                 
                 // Recharger les stats pour voir le stock augmenter
-                import('./stats.js').then(({ statsView }) => statsView.load());
+                import('./stats.js?v=20261107-0212').then(({ statsView }) => statsView.load());
             } catch (error) {
                 tg?.showAlert?.(error.message || 'Erreur de connexion.');
                 tg?.HapticFeedback?.notificationOccurred('error');

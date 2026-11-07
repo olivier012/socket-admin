@@ -1,4 +1,4 @@
-import { CONFIG } from './config.js';
+import { CONFIG } from './config.js?v=20261107-0212';
 
 export const api = {
     async post(endpoint, data) {
