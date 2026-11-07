@@ -1,16 +1,26 @@
-import { auth } from './auth.js?v=20261107-0300';
-import { router } from './routes.js?v=20261107-0300';
-import { statsView } from './views/stats.js?v=20261107-0300';
-import { codesView } from './views/codes.js?v=20261107-0300';
+import { auth } from './auth.js?v=20261107-0400';
+import { router } from './routes.js?v=20261107-0400';
+import { statsView } from './views/stats.js?v=20261107-0400';
+import { codesView } from './views/codes.js?v=20261107-0400';
 
 const tg = window.Telegram?.WebApp;
-if (tg) {
-    tg.expand();
-    if (tg.setHeaderColor) tg.setHeaderColor({ backgroundColor: '#f3f5f1', textColor: '#171918' });
-    tg.setBackgroundColor('#f3f5f1');
-}
 
-// Éléments du DOM
+// --- INITIALISATION TELEGRAM (Couleurs & Header) ---
+function initTelegramUI() {
+    if (!tg) return;
+    tg.expand();
+    tg.setBackgroundColor('#f3f5f1');
+    
+    // On attend 150ms pour que la WebApp soit prête avant de changer le header
+    setTimeout(() => {
+        if (tg.setHeaderColor) {
+            tg.setHeaderColor({ backgroundColor: '#f3f5f1', textColor: '#171918' });
+        }
+    }, 150);
+}
+initTelegramUI();
+
+// --- ÉLÉMENTS DU DOM ---
 const loginPage = document.getElementById('loginPage');
 const app = document.getElementById('app');
 const loginStatus = document.getElementById('loginStatus');
@@ -22,28 +32,31 @@ const loginLoader = document.getElementById('loginLoader');
 let currentPin = '';
 let isVerifying = false;
 
-// --- LOGIQUE DU CLAVIER ---
-numpad.addEventListener('click', async (e) => {
-    if (isVerifying) return; // On bloque le clavier pendant le chargement
-    
-    const btn = e.target.closest('.numpad-btn');
-    if (!btn || btn.disabled) return;
+// --- LOGIQUE DU CLAVIER NUMÉRIQUE ---
+if (numpad) {
+    numpad.addEventListener('click', async (e) => {
+        if (isVerifying) return; 
+        
+        const btn = e.target.closest('.numpad-btn');
+        if (!btn || btn.disabled) return;
 
-    const key = btn.dataset.key;
-    tg?.HapticFeedback?.impactOccurred('light');
+        const key = btn.dataset.key;
+        tg?.HapticFeedback?.impactOccurred('light');
 
-    if (key === 'backspace') {
-        currentPin = currentPin.slice(0, -1);
-    } else if (currentPin.length < 4) {
-        currentPin += key;
-    }
+        if (key === 'backspace') {
+            currentPin = currentPin.slice(0, -1);
+        } else if (currentPin.length < 4) {
+            currentPin += key;
+        }
 
-    updateDots();
+        updateDots();
 
-    if (currentPin.length === 4) {
-        await handleLogin(currentPin);
-    }
-});
+        // Vérification automatique dès 4 chiffres
+        if (currentPin.length === 4) {
+            await handleLogin(currentPin);
+        }
+    });
+}
 
 function updateDots() {
     dots.forEach((dot, index) => dot.classList.toggle('filled', index < currentPin.length));
@@ -58,6 +71,7 @@ function resetPin() {
     isVerifying = false;
 }
 
+// --- GESTION DU LOGIN ---
 async function handleLogin(pin) {
     isVerifying = true;
     numpad.style.display = 'none';
@@ -68,7 +82,7 @@ async function handleLogin(pin) {
     try {
         await auth.login(pin);
         
-        // Petit délai pour que le loader soit visible
+        // Délai pour laisser le temps de voir le loader
         setTimeout(() => {
             tg?.HapticFeedback?.notificationOccurred('success');
             showApp();
@@ -88,26 +102,27 @@ async function handleLogin(pin) {
     }
 }
 
-// --- LOGIQUE DES VUES & TOAST ---
+// --- LOGIQUE DES VUES (App & Login) ---
 function showApp() {
     loginPage.classList.add('hidden');
     app.classList.remove('hidden');
     
-    // On affiche TOUJOURS le bouton admin, mais il agira différemment selon le rôle
+    // Affichage du rôle
     document.querySelector('.topbar p').textContent = auth.isSuperAdmin() ? 'Superadmin' : 'Utilisateur';
     
-    // Interception du clic sur le bouton Admin
+    // Le bouton Admin est TOUJOURS visible, mais on intercepte le clic si on n'est pas superadmin
     const adminButton = document.querySelector('.nav-button[data-view="admin"]');
-    adminButton.onclick = (e) => {
-        if (!auth.isSuperAdmin()) {
-            e.preventDefault();
-            e.stopPropagation();
-            showToast("Désolé, accès refusé");
-            return;
-        }
-        // Si superadmin, on laisse le router faire son travail
-        router.navigateTo('admin');
-    };
+    if (adminButton) {
+        adminButton.onclick = (e) => {
+            if (!auth.isSuperAdmin()) {
+                e.preventDefault();
+                e.stopPropagation();
+                showToast("Désolé, accès refusé");
+                return;
+            }
+            // Si superadmin, le routeur fait son travail (le bouton est déjà lié dans routes.js)
+        };
+    }
 
     statsView.load();
 }
@@ -119,7 +134,7 @@ function showLogin(message = '') {
     resetPin();
 }
 
-// Fonction Toast
+// --- TOAST (Message flottant) ---
 function showToast(message) {
     let toast = document.getElementById('adminToast');
     if (!toast) {
@@ -135,19 +150,26 @@ function showToast(message) {
     setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-// Gestion de la déconnexion
-document.getElementById('logoutButton').addEventListener('click', () => auth.logout());
+// --- ÉVÉNEMENTS GLOBAUX ---
+document.getElementById('logoutButton').addEventListener('click', () => {
+    auth.logout();
+});
 
-// Initialisation
+// --- INITIALISATION ---
 function init() {
+    // Nettoyage du cache (optionnel)
     if ('caches' in window) {
         caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key)))).catch(() => {});
     }
+
     router.init();
     codesView.init();
 
-    if (auth.isLoggedIn()) showApp();
-    else showLogin('');
+    if (auth.isLoggedIn()) {
+        showApp();
+    } else {
+        showLogin('');
+    }
 }
 
 init();
