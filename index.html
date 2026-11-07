@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="color-scheme" content="dark">
+    <title>Socket Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="top">
+        <div>
+            <p>Panneau de gestion</p>
+            <h1>Socket Admin</h1>
+        </div>
+        <div class="admin-badge">ADMIN</div>
+    </header>
+
+    <!-- STATS CARDS -->
+    <section class="stats-grid">
+        <div class="stat-card">
+            <span>Utilisateurs</span>
+            <strong id="stat-users">0</strong>
+        </div>
+        <div class="stat-card">
+            <span>Chiffre d'affaires</span>
+            <strong id="stat-revenue">0 €</strong>
+        </div>
+        <div class="stat-card">
+            <span>Commandes</span>
+            <strong id="stat-orders">0</strong>
+        </div>
+        <div class="stat-card">
+            <span>Codes en stock</span>
+            <strong id="stat-codes">0</strong>
+        </div>
+    </section>
+
+    <!-- ONGLET AJOUT DE CODE -->
+    <section class="card">
+        <h2>Ajouter un code</h2>
+        <p class="sub">Ajoutez un code à distribuer pour une carte.</p>
+        
+        <form id="addCodeForm">
+            <label>Produit</label>
+            <select id="productSelect">
+                <option value="steam">Steam</option>
+                <option value="netflix">Netflix</option>
+                <option value="psn">PlayStation Store</option>
+                <option value="spotify">Spotify Premium</option>
+            </select>
+
+            <label>Code de la carte</label>
+            <input type="text" id="codeInput" placeholder="Ex: CODE-1234-ABCD" required>
+
+            <button type="submit">Ajouter au stock</button>
+        </form>
+    </section>
+
+    <!-- NAVIGATION BASSE -->
+    <nav class="nav">
+        <button class="tab active" data-tab="stats">📊 Stats</button>
+        <button class="tab" data-tab="addcode">➕ Codes</button>
+        <button class="tab" data-tab="orders">🛒 Commandes</button>
+    </nav>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
