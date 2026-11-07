@@ -5,6 +5,29 @@ import { codesView } from './views/codes.js?v=20261107-0400';
 
 const tg = window.Telegram?.WebApp;
 
+if (tg) {
+    tg.expand();
+    
+    // 1. On force le fond de l'app en blanc
+    tg.setBackgroundColor('#ffffff');
+    
+    // 2. On force la barre du haut en blanc
+    // On utilise la syntaxe simple qui marche sur toutes les versions
+    if (tg.setHeaderColor) {
+        tg.setHeaderColor('#ffffff');
+    }
+    
+    // 3. (Optionnel) On force aussi la couleur du texte de la barre en noir
+    // pour qu'il soit lisible sur fond blanc, même si le tel est en mode sombre
+    if (tg.setHeaderColor) {
+        try {
+            tg.setHeaderColor({ backgroundColor: '#ffffff', textColor: '#000000' });
+        } catch (e) {
+            // Si la version ne supporte pas l'objet, on garde juste le blanc
+        }
+    }
+}
+
 // --- INITIALISATION TELEGRAM (Couleurs & Header) ---
 function initTelegramUI() {
     if (!tg) return;
